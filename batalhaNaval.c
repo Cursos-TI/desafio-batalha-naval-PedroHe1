@@ -1,40 +1,97 @@
 #include <stdio.h>
 
-// Desafio Batalha Naval - MateCheck
-// Este código inicial serve como base para o desenvolvimento do sistema de Batalha Naval.
-// Siga os comentários para implementar cada parte do desafio.
+#define SIZE 10       // Tamanho do tabuleiro
+#define SKILL 5  // Tamanho da matriz de habilidades
 
+// Tabuleiro 10x10
+int board[SIZE][SIZE] = {0};
+
+// Matrizes das habilidades
+int coneSkill[SKILL][SKILL] = {
+    {0, 0, 1, 0, 0},
+    {0, 1, 1, 1, 0},
+    {1, 1, 1, 1, 1},
+    {0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0}
+};
+
+int crossSkill[SKILL][SKILL] = {
+    {0, 0, 1, 0, 0},
+    {0, 0, 1, 0, 0},
+    {1, 1, 1, 1, 1},
+    {0, 0, 1, 0, 0},
+    {0, 0, 1, 0, 0}
+};
+
+int octahedronSkill[SKILL][SKILL] = {
+    {0, 0, 1, 0, 0},
+    {0, 1, 1, 1, 0},
+    {1, 1, 1, 1, 1},
+    {0, 1, 1, 1, 0},
+    {0, 0, 1, 0, 0}
+};
+
+// Aplica a habilidade no tabuleiro com base na matriz da habilidade
+void applySkill(int skill[SKILL][SKILL], int originX, int originY) {
+    int offset = SKILL / 2; // Define o centro da matriz
+
+    for (int i = 0; i < SKILL; i++) {
+        for (int j = 0; j < SKILL; j++) {
+            int x = originX + i - offset;
+            int y = originY + j - offset;
+
+            // Verifica se está dentro do tabuleiro antes de marcar
+            if (x >= 0 && x < SIZE && y >= 0 && y < SIZE && skill[i][j] == 1) {
+                if (board[x][y] == 0) { // Apenas substitui se for água
+                    board[x][y] = 5; // Marca como área afetada
+                }
+            }
+        }
+    }
+}
+
+// Exibe o tabuleiro
+void displayBoard() {
+    char linha[SIZE] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'};
+    int coluna[SIZE] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+    printf("\n   "); // Espaço para alinhar os números
+    for (int i = 0; i < SIZE; i++) {
+        printf(" %c", linha[i]);
+    }
+    printf("\n");
+
+    for (int i = 0; i < SIZE; i++) {
+        printf("%2d ", coluna[i]); // Números da coluna à esquerda
+        for (int j = 0; j < SIZE; j++) {
+            if (board[i][j] == 0)
+                printf(" 0"); // Água
+            else if (board[i][j] == 3)
+                printf(" 3"); // Navio
+            else if (board[i][j] == 5)
+                printf(" 5"); // Área afetada
+        }
+        printf("\n");
+    }
+}
+
+// Programa principal
 int main() {
-    // Nível Novato - Posicionamento dos Navios
-    // Sugestão: Declare uma matriz bidimensional para representar o tabuleiro (Ex: int tabuleiro[5][5];).
-    // Sugestão: Posicione dois navios no tabuleiro, um verticalmente e outro horizontalmente.
-    // Sugestão: Utilize `printf` para exibir as coordenadas de cada parte dos navios.
+    // Posiciona alguns navios no tabuleiro
+    board[5][5] = 3;
+    board[5][6] = 3;
+    board[6][5] = 3;
 
-    // Nível Aventureiro - Expansão do Tabuleiro e Posicionamento Diagonal
-    // Sugestão: Expanda o tabuleiro para uma matriz 10x10.
-    // Sugestão: Posicione quatro navios no tabuleiro, incluindo dois na diagonal.
-    // Sugestão: Exiba o tabuleiro completo no console, mostrando 0 para posições vazias e 3 para posições ocupadas.
+    printf("\nTABULEIRO ANTES DAS HABILIDADES:\n");
+    displayBoard();
 
-    // Nível Mestre - Habilidades Especiais com Matrizes
-    // Sugestão: Crie matrizes para representar habilidades especiais como cone, cruz, e octaedro.
-    // Sugestão: Utilize estruturas de repetição aninhadas para preencher as áreas afetadas por essas habilidades no tabuleiro.
-    // Sugestão: Exiba o tabuleiro com as áreas afetadas, utilizando 0 para áreas não afetadas e 1 para áreas atingidas.
+    // Aplica habilidades em posições diferentes
+    applySkill(coneSkill, 2, 2);
+    applySkill(crossSkill, 4, 4);
+    applySkill(octahedronSkill, 7, 6);
 
-    // Exemplos de exibição das habilidades:
-    // Exemplo para habilidade em cone:
-    // 0 0 1 0 0
-    // 0 1 1 1 0
-    // 1 1 1 1 1
-    
-    // Exemplo para habilidade em octaedro:
-    // 0 0 1 0 0
-    // 0 1 1 1 0
-    // 0 0 1 0 0
-
-    // Exemplo para habilidade em cruz:
-    // 0 0 1 0 0
-    // 1 1 1 1 1
-    // 0 0 1 0 0
+    printf("\nTABULEIRO APÓS APLICAÇÃO DAS HABILIDADES:\n");
+    displayBoard();
 
     return 0;
 }
